@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/20.ico</file>
+        <file>img/103.bmp</file>
+        <file>img/120.bmp</file>
+        <file>img/430.bmp</file>
+        <file>img/autoChangeLine.png</file>
+        <file>img/BLD.BMP</file>
+        <file>img/copy.png</file>
+        <file>img/cut.bmp</file>
+        <file>img/DBLUNDR.BMP</file>
+        <file>img/exit.bmp</file>
+        <file>img/find.png</file>
+        <file>img/font.png</file>
+        <file>img/ITL.BMP</file>
+        <file>img/new2.bmp</file>
+        <file>img/open3.bmp</file>
+        <file>img/paste.bmp</file>
+        <file>img/paste.png</file>
+        <file>img/replace.png</file>
+        <file>img/restore.png</file>
+        <file>img/revoke.png</file>
+        <file>img/save.png</file>
+        <file>img/saveAs.png</file>
+        <file>img/showLine.png</file>
+        <file>img/status.png</file>
+        <file>img/tools.png</file>
+        <file>img/tools-fill.bmp</file>
+        <file>img/UNDRLN.BMP</file>
+        <file>img/WORDUNDR.BMP</file>
+    </qresource>
+</RCC>
