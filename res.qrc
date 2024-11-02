@@ -28,5 +28,6 @@
         <file>img/tools-fill.bmp</file>
         <file>img/UNDRLN.BMP</file>
         <file>img/WORDUNDR.BMP</file>
+        <file>img/note.png</file>
     </qresource>
 </RCC>

@@ -301,6 +301,9 @@
    </property>
   </action>
   <action name="actionLineWrap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/img/autoChangeLine.png</normaloff>:/img/autoChangeLine.png</iconset>
@@ -313,6 +316,9 @@
    </property>
   </action>
   <action name="actionShowToolbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/img/tools.png</normaloff>:/img/tools.png</iconset>
@@ -325,6 +331,9 @@
    </property>
   </action>
   <action name="actionShowStatusBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/img/status.png</normaloff>:/img/status.png</iconset>
