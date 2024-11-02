@@ -45,6 +45,18 @@ void CodeEditor::updateLineNumberArea(const QRect &rect, int dy)
         updateLineNumberAreaWidth(0);
 }
 
+void CodeEditor::hideLineNumberArea(bool flag)
+{
+    if(!flag){
+        lineNumberArea->hide();
+        setViewportMargins(0, 0, 0, 0);
+    }
+    else{
+        lineNumberArea->show();
+        setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
+    }
+}
+
 void CodeEditor::resizeEvent(QResizeEvent *e)
 {
     QPlainTextEdit::resizeEvent(e);

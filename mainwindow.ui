@@ -415,6 +415,9 @@
    </property>
   </action>
   <action name="actionShowLine">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/img/showLine.png</normaloff>:/img/showLine.png</iconset>
