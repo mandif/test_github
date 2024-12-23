@@ -11,6 +11,16 @@ ChatClient::ChatClient(QObject *parent)
     connect(m_clientSocket,&QTcpSocket::readyRead,this, &ChatClient::onReadyRead);
 }
 
+void ChatClient::setUserName(const QString &name)
+{
+    m_userName = name;
+}
+
+QString ChatClient::userName()
+{
+    return m_userName;
+}
+
 void ChatClient::onReadyRead()
 {
     QByteArray jsonData;

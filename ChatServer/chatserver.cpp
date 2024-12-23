@@ -178,18 +178,19 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         qDebug() << "被踢出的用户是：" << kickedUser;
 
         // 处理踢出用户的逻辑
-        for (ServerWorker *worker : m_clients) {
-            if (worker->userName() == kickedUser) {
-                worker->disconnect(); // 断开连接
-                break; // 找到用户后退出循环
-            }
-        }
+        // for (ServerWorker *worker : m_clients) {
+        //     if (worker->userName() == kickedUser) {
+        //         worker->disconnect(); // 断开连接
+        //         break; // 找到用户后退出循环
+        //     }
+        // }
 
         // 广播踢出消息
         QJsonObject kickMessage;
         kickMessage["type"] = "kick";
-        kickMessage["username"] = kickedUser;
+        kickMessage["kickUserName"] = kickedUser;
         boradcast(kickMessage, nullptr); // 广播踢出事件
+        emit logMessage(kickedUser + "disconnected");
     }
 }
 

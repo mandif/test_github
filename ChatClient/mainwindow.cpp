@@ -65,6 +65,7 @@ void MainWindow::connectToServer() //连接服务器
         isAdmin = true;  // 如果是管理员，设置为true
     }
     else{
+        m_chatClient->setUserName(ui->userNameEdit->text());
         m_chatClient->sendMessage(ui->userNameEdit->text(),"login");
         isAdmin = false;  // 如果不是管理员，设置为false
     }
@@ -170,6 +171,28 @@ void MainWindow::jsonReceived(const QJsonObject &docObj)
 
         // 将这个用户禁言
         handleMuteUser(muteUser);
+    }else if (typeVal.toString().compare("kick", Qt::CaseInsensitive) == 0){
+        // 从 JSON 对象中获取 "username" 字段的值
+        const QJsonValue kicknameVal = docObj.value("kickUserName");
+
+        // 检查用户名是否为空或非字符串类型，如果是，则返回
+        if (kicknameVal.isNull() || !kicknameVal.isString())
+            return;
+
+        qDebug() << "该线程用户是：" << m_chatClient->userName();
+        qDebug() << "被踢出的用户是：" << kicknameVal.toString();
+        qDebug() << "踢出操作有没有到这一步！！！！！！！！！！！";
+
+        // 调用 userLeft 函数处理用户离开
+        userLeft(kicknameVal.toString());
+
+        //进行强制下线操作
+        if(isSelf(kicknameVal.toString())){
+            qDebug() << "确认是该用户了！！！！！！";
+            on_logoutButton_clicked();
+        }
+
+        printAllItems();
     }
 }
 
@@ -212,28 +235,6 @@ void MainWindow::userListReceived(const QStringList &list)
     }
     else ui->userListWidget->addItems(list);
 }
-
-// void MainWindow::contextMenuRequested(const QPoint &pos)
-// {
-//     QListWidgetItem *item = ui->userListWidget->itemAt(pos);
-//     if (item) {
-//         if(isAdmin == true){
-//             QMenu contextMenu(this);
-//             QAction *muteAction = contextMenu.addAction("禁言");
-//             QAction *kickAction = contextMenu.addAction("踢除");
-
-//             QAction *selectedAction = contextMenu.exec(ui->userListWidget->viewport()->mapToGlobal(pos));
-
-//             if (selectedAction == muteAction) {
-//                 QString userName = item->text();
-//                 muteUser(userName);
-//             } else if (selectedAction == kickAction) {
-//                 QString userName = item->text();
-//                 kickUser(userName);
-//             }
-//         }
-//     }
-// }
 
 void MainWindow::contextMenuRequested(const QPoint &pos)
 {
@@ -278,4 +279,29 @@ void MainWindow::kickUser(const QString &userName) {
 
     // 假设您需要通过格式化并发送到服务器
     m_chatClient->sendMessage(userName, "kick");
+
+    //对被踢出的用户进行下线，并且在用户列表中将该用户删除
+
+    // ui->stackedWidget->setCurrentWidget(ui->loginPage);
+    // ui->sayButton->setEnabled(true);
+}
+
+bool MainWindow::isSelf(const QString &userName){
+    qDebug() << "有没有对用户所在线程进行判断";
+    if(m_chatClient->userName() == userName){
+        qDebug() << "这不是正确的吗！！！！！！！！";
+        return true;
+    }
+    return false;
+}
+
+void MainWindow::printAllItems() {
+    for (int i = 0; i < ui->userListWidget->count(); ++i) {
+        // 获取 QListWidgetItem
+        QListWidgetItem *item = ui->userListWidget->item(i);
+        if (item) {
+            // 打印每个项目的文本
+            qDebug() << item->text();
+        }
+    }
 }

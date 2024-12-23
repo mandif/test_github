@@ -9,6 +9,8 @@ class ChatClient : public QObject
     Q_OBJECT
 public:
     explicit ChatClient(QObject *parent = nullptr);
+    void setUserName(const QString &name);
+    QString userName();
 
 signals:
     void connected();
@@ -17,6 +19,7 @@ signals:
 
 private:
     QTcpSocket *m_clientSocket;
+    QString m_userName;
 
 public slots:
     void onReadyRead();
