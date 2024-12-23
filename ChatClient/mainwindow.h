@@ -32,10 +32,16 @@ private slots:
     void userJoined(const QString &user);
     void userLeft(const QString &user);
     void userListReceived(const QStringList &list);
+    // void contextMenuEvent(QContextMenuEvent *event);
+    void muteUser(const QString &userName);
+    void kickUser(const QString &userName);
 
+    void contextMenuRequested(const QPoint &pos);
+    void handleMuteUser(const QString muteUser);
 private:
     Ui::MainWindow *ui;
 
     ChatClient *m_chatClient;
+    bool isAdmin;  // 新增变量，用于标记当前用户是否为管理员
 };
 #endif // MAINWINDOW_H
