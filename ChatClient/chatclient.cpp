@@ -27,23 +27,27 @@ void ChatClient::onReadyRead()
     QDataStream socketStream(m_clientSocket);
     socketStream.setVersion(QDataStream::Qt_6_7);
 
-    for(;;){
+    for (;;) {
         socketStream.startTransaction();
         socketStream >> jsonData;
-        if(socketStream.commitTransaction()){
-            // emit messageReceived(QString::fromUtf8(jsonData));
-
+        if (socketStream.commitTransaction()) {
             QJsonParseError parseError;
-            const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData,&parseError);
-            if(parseError.error == QJsonParseError::NoError){
-                if(jsonDoc.isObject()){
-                    // emit logMessage(QJsonDocument(jsonDoc).toJson(QJsonDocument::Compact));
-                    emit jsonReceived(jsonDoc.object());
+            const QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+            if (parseError.error == QJsonParseError::NoError) {
+                if (jsonDoc.isObject()) {
+                    const QJsonObject jsonObj = jsonDoc.object();
+                    const QString messageType = jsonObj.value("type").toString();
+
+                    if (messageType.compare("private_message", Qt::CaseInsensitive) == 0) {
+                        const QString sender = jsonObj.value("sender").toString(); // 获取发送者
+                        const QString message = jsonObj.value("text").toString(); // 获取消息内容
+                        emit privateMessageReceived(sender, message); // 发出私聊消息信号
+                    } else {
+                        emit jsonReceived(jsonDoc.object()); // 处理其他类型的消息
+                    }
                 }
             }
-
-
-        }else{
+        } else {
             break;
         }
     }
@@ -61,7 +65,6 @@ void ChatClient::sendMessage(const QString &text, const QString &type)
         QJsonObject message;
         message["type"] = type;
         message["text"] = text;
-
         serverStream << QJsonDocument(message).toJson();
     }
 }

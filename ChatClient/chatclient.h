@@ -16,6 +16,7 @@ signals:
     void connected();
     void messageReceived(const QString &text);
     void jsonReceived(const QJsonObject &docObj);
+    void privateMessageReceived(const QString &sender, const QString &message);  // 添加信号
 
 private:
     QTcpSocket *m_clientSocket;

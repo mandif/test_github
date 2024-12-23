@@ -191,6 +191,20 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         kickMessage["kickUserName"] = kickedUser;
         boradcast(kickMessage, nullptr); // 广播踢出事件
         emit logMessage(kickedUser + "disconnected");
+    }else if(typeVal.toString().compare("ReLink", Qt::CaseInsensitive) == 0){
+        const QJsonValue linkUserVal = docObj.value("text");
+        if (linkUserVal.isNull() || !linkUserVal.isString()) return;
+
+        QString linkUserName = linkUserVal.toString();
+        qDebug() << "用户" << linkUserName << "被请求连接";
+
+        // 通知所有用户某个用户被请求连接
+        QJsonObject muteMessage;
+        muteMessage["type"] = "ReLink"; // 通知类型为请求连接
+        muteMessage["linkUserName"] = linkUserName; // 被请求连接的用户名
+
+        boradcast(muteMessage, nullptr); // 广播请求连接消息
+
     }
 }
 

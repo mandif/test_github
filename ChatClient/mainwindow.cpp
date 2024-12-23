@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->userListWidget, &QListWidget::customContextMenuRequested,
             this, &MainWindow::contextMenuRequested);
 
+    connect(ui->userListWidget, &QListWidget::itemDoubleClicked, this, &MainWindow::onUserDoubleClicked);
+
 }
 
 MainWindow::~MainWindow()
@@ -193,6 +195,21 @@ void MainWindow::jsonReceived(const QJsonObject &docObj)
         }
 
         printAllItems();
+    }else if (typeVal.toString().compare("ReLink", Qt::CaseInsensitive) == 0){
+        // 从 JSON 对象中获取 "username" 字段的值
+        const QJsonValue linkUserNameVal = docObj.value("linkUserName");
+
+        // 检查用户名是否为空或非字符串类型，如果是，则返回
+        if (linkUserNameVal.isNull() || !linkUserNameVal.isString())
+            return;
+
+        QString linkUserName = linkUserNameVal.toString();
+
+        if(isSelf(linkUserName)){
+            qDebug() << "用户" << linkUserName << "接收到连接了";
+            showWindow(linkUserName);
+        }
+
     }
 }
 
@@ -304,4 +321,48 @@ void MainWindow::printAllItems() {
             qDebug() << item->text();
         }
     }
+}
+
+//双击进行私聊
+void MainWindow::onUserDoubleClicked(QListWidgetItem *item) {
+    if (item) {
+        QString username = item->text();
+
+        qDebug() << "被双击的用户是：" << username;
+
+        showWindow(username);
+
+        //请求被双击用户的连接
+        m_chatClient->sendMessage(username, "ReLink");
+    }
+}
+
+void MainWindow::showWindow(const QString &username){
+    // 检查是否已经有这个用户的聊天窗口打开
+    if (m_chatWindows.contains(username)) {
+        // 如果窗口已经打开，则直接激活它
+        m_chatWindows[username]->activateWindow();
+        return;
+    }
+
+    // 创建新聊天窗口
+    PrivateChatWindow *chatWindow = new PrivateChatWindow(username, this);
+    m_chatWindows[username] = chatWindow; // 存储窗口实例
+
+    // 连接发送消息的信号
+    connect(chatWindow, &PrivateChatWindow::sendMessageToUser,
+            [=](const QString &recipient, const QString &message) {
+                m_chatClient->sendMessage(message, recipient);
+            });
+
+    // 连接接收消息的信号
+    connect(m_chatClient, &ChatClient::privateMessageReceived,
+            chatWindow, &PrivateChatWindow::receiveMessage);
+
+    // 连接 finished 信号来处理窗口关闭
+    connect(chatWindow, &QDialog::finished, [=]() {
+        m_chatWindows.remove(username);  // 从 map 中移除
+    });
+
+    chatWindow->show();  // 显示被双击用户的聊天窗口
 }
