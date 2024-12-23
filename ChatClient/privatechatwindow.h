@@ -9,19 +9,20 @@ class PrivateChatWindow : public QDialog {
 
 public:
     explicit PrivateChatWindow(const QString &username, QWidget *parent = nullptr);
+    void setUserName(const QString &name);
 
 signals:
     void sendMessageToUser(const QString &recipient, const QString &message);
 
 public slots:
-    void receiveMessage(const QString &sender, const QString &message);
+    void receiveMessage(const QString &sender, const QString &reciver, const QString &message);
 
 private slots:
     void sendMessage();
 
 private:
     Ui::PrivateChatWindow ui; // 使用 UI 结构体的声明
-    QString m_username;
+    QString m_priusername;
 };
 
 #endif // PRIVATECHATWINDOW_H

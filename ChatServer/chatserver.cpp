@@ -40,6 +40,9 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
     // 从 JSON 对象中获取 "type" 字段的值
     const QJsonValue typeVal = docObj.value("type");
 
+    //测试获取到的是什么类型的数据
+    qDebug() << "测试获取到的是什么类型的数据:" << typeVal.toString();
+
     // 检查 "type" 值是否为空或非字符串类型，如果是，则返回
     if (typeVal.isNull() || !typeVal.isString())
         return;
@@ -192,19 +195,51 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         boradcast(kickMessage, nullptr); // 广播踢出事件
         emit logMessage(kickedUser + "disconnected");
     }else if(typeVal.toString().compare("ReLink", Qt::CaseInsensitive) == 0){
-        const QJsonValue linkUserVal = docObj.value("text");
-        if (linkUserVal.isNull() || !linkUserVal.isString()) return;
+        const QJsonValue ReLinkUserVal = docObj.value("ReLink");
+        const QJsonValue LinkedUserVal = docObj.value("Linked");
+        if (ReLinkUserVal.isNull() || !ReLinkUserVal.isString()) return;
+        if (LinkedUserVal.isNull() || !LinkedUserVal.isString()) return;
 
-        QString linkUserName = linkUserVal.toString();
-        qDebug() << "用户" << linkUserName << "被请求连接";
+        QString LinkedUserName = LinkedUserVal.toString();
+        QString ReLinkUserName = ReLinkUserVal.toString();
+        qDebug() << "用户" << ReLinkUserName << "发起连接";
+        qDebug() << "用户" << LinkedUserName << "被请求连接";
 
         // 通知所有用户某个用户被请求连接
-        QJsonObject muteMessage;
-        muteMessage["type"] = "ReLink"; // 通知类型为请求连接
-        muteMessage["linkUserName"] = linkUserName; // 被请求连接的用户名
+        QJsonObject linkMessage;
+        linkMessage["type"] = "ReLink"; // 通知类型为请求连接
+        linkMessage["LinkedUserName"] = LinkedUserName; // 被请求连接的用户名
+        linkMessage["ReLinkUserName"] = ReLinkUserName; // 请求连接的用户名
 
-        boradcast(muteMessage, nullptr); // 广播请求连接消息
+        boradcast(linkMessage, nullptr); // 广播请求连接消息
 
+    }else if(typeVal.toString().compare("recipient", Qt::CaseInsensitive) == 0){
+
+        //测试私聊消息有没有到这
+        qDebug() << "测试私聊消息有没有到这";
+
+        const QJsonValue ReLinkUserVal = docObj.value("ReLink");
+        const QJsonValue LinkedUserVal = docObj.value("Linked");
+        const QJsonValue messageVal = docObj.value("message");
+        if (ReLinkUserVal.isNull() || !ReLinkUserVal.isString()) return;
+        if (LinkedUserVal.isNull() || !LinkedUserVal.isString()) return;
+
+
+        QString LinkedUserName = LinkedUserVal.toString();
+        QString ReLinkUserName = ReLinkUserVal.toString();
+        QString message = messageVal.toString();
+        qDebug() << "用户" << ReLinkUserName << "发起连接";
+        qDebug() << "用户" << LinkedUserName << "被请求连接";
+        qDebug() << "发送了私聊消息：" << message;
+
+        // 通知所有用户某个用户被请求连接
+        QJsonObject privateMessage;
+        privateMessage["type"] = "recipient"; // 通知类型为请求连接
+        privateMessage["LinkedUserName"] = LinkedUserName; // 被请求连接的用户名
+        privateMessage["ReLinkUserName"] = ReLinkUserName; // 请求连接的用户名
+        privateMessage["message"] = message; // 私聊消息
+
+        boradcast(privateMessage, nullptr); // 广播请求连接消息
     }
 }
 

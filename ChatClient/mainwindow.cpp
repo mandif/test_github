@@ -197,17 +197,21 @@ void MainWindow::jsonReceived(const QJsonObject &docObj)
         printAllItems();
     }else if (typeVal.toString().compare("ReLink", Qt::CaseInsensitive) == 0){
         // 从 JSON 对象中获取 "username" 字段的值
-        const QJsonValue linkUserNameVal = docObj.value("linkUserName");
+        const QJsonValue LinkedUserNameVal = docObj.value("LinkedUserName");
+        const QJsonValue ReLinkUserNameVal = docObj.value("ReLinkUserName");
 
         // 检查用户名是否为空或非字符串类型，如果是，则返回
-        if (linkUserNameVal.isNull() || !linkUserNameVal.isString())
+        if (LinkedUserNameVal.isNull() || !LinkedUserNameVal.isString())
+            return;
+        if (ReLinkUserNameVal.isNull() || !ReLinkUserNameVal.isString())
             return;
 
-        QString linkUserName = linkUserNameVal.toString();
+        QString LinkedUserName = LinkedUserNameVal.toString();
+        QString ReLinkUserName = ReLinkUserNameVal.toString();
 
-        if(isSelf(linkUserName)){
-            qDebug() << "用户" << linkUserName << "接收到连接了";
-            showWindow(linkUserName);
+        if(isSelf(LinkedUserName)){
+            qDebug() << "用户" << LinkedUserName << "接收到连接了";
+            showWindow(ReLinkUserName);
         }
 
     }
@@ -333,7 +337,7 @@ void MainWindow::onUserDoubleClicked(QListWidgetItem *item) {
         showWindow(username);
 
         //请求被双击用户的连接
-        m_chatClient->sendMessage(username, "ReLink");
+        m_chatClient->sendPrivateMessage(m_chatClient->userName(),username,"ReLink");
     }
 }
 
@@ -352,7 +356,9 @@ void MainWindow::showWindow(const QString &username){
     // 连接发送消息的信号
     connect(chatWindow, &PrivateChatWindow::sendMessageToUser,
             [=](const QString &recipient, const QString &message) {
-                m_chatClient->sendMessage(message, recipient);
+                qDebug() << "类型为：" << recipient;   //这里的类型recipient是私聊消息接收方的用户名
+                qDebug() << "私聊发送的消息是：" << message;
+                m_chatClient->sendBothPrivateMessage(m_chatClient->userName(), recipient, message, "recipient");
             });
 
     // 连接接收消息的信号
