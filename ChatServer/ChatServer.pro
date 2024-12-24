@@ -10,16 +10,19 @@ CONFIG += c++17
 
 SOURCES += \
     chatserver.cpp \
+    historydialog.cpp \
     main.cpp \
     mainwindow.cpp \
     serverworker.cpp
 
 HEADERS += \
     chatserver.h \
+    historydialog.h \
     mainwindow.h \
     serverworker.h
 
 FORMS += \
+    historydialog.ui \
     mainwindow.ui
 
 # Default rules for deployment.

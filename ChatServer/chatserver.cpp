@@ -8,6 +8,17 @@ ChatServer::ChatServer(QObject *parent):
     QTcpServer(parent)
 {}
 
+const QList<QString> &ChatServer::getChatHistory() const
+{
+    return m_chatHistory; // 返回聊天记录
+}
+
+void ChatServer::logChatMessage(const QString &msg)
+{
+    m_chatHistory.append(msg); // 保存消息到历史记录
+    emit logMessage(msg); // 发送日志消息信号
+}
+
 void ChatServer::incomingConnection(qintptr socketDescriptor)
 {
     ServerWorker *worker = new ServerWorker(this);

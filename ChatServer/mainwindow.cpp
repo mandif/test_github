@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "historydialog.h" // 引入头文件
 #include <QMessageBox>
 
 
@@ -41,3 +42,10 @@ void MainWindow::logMessage(const QString &msg)
     ui->logEditor->appendPlainText(msg);
 }
 
+void MainWindow::on_historyButton_clicked()
+{
+    HistoryDialog *dialog = new HistoryDialog(this);
+    dialog->exec(); // 弹出对话框
+    dialog->setHistory(m_chatServer->getChatHistory()); // 设置历史消息
+    delete dialog; // 关闭后删除对话框
+}

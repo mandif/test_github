@@ -43,6 +43,7 @@ void MainWindow::on_sayButton_clicked()
 {
     if(!ui->sayLineEdit->text().isEmpty()){
         m_chatClient->sendMessage(ui->sayLineEdit->text());
+        ui->sayLineEdit->clear();
     }
 }
 

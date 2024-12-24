@@ -20,6 +20,7 @@ public:
 
 private slots:
     void on_startStopButton_clicked();
+    void on_historyButton_clicked();
 
 public slots:
     void logMessage(const QString &msg);
