@@ -44,7 +44,7 @@ void ServerWorker::onReadyRead()
                 if (jsonDoc.isObject()) {  // 确认 JSON 文档是一个对象
                     qDebug() << QJsonDocument(jsonDoc).toJson(QJsonDocument::Compact);
                     emit logMessage(QJsonDocument(jsonDoc).toJson(QJsonDocument::Compact));  // 记录收到的 JSON 消息
-                    qDebug() << jsonDoc.object();
+                    qDebug() << "现在需要判断这个消息是什么：" << jsonDoc.object();
                     emit jsonReceived(this, jsonDoc.object());  // 发射信号，传递 JSON 对象以供进一步处理
                 }
             }

@@ -10,8 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     m_chatServer = new ChatServer(this);
+    dialog = nullptr;
 
     connect(m_chatServer,&ChatServer::logMessage,this,&MainWindow::logMessage);
+    connect(m_chatServer, &ChatServer::newMessageReceived, this, &MainWindow::updateHistory);
 }
 
 MainWindow::~MainWindow()
@@ -44,8 +46,18 @@ void MainWindow::logMessage(const QString &msg)
 
 void MainWindow::on_historyButton_clicked()
 {
-    HistoryDialog *dialog = new HistoryDialog(this);
-    dialog->exec(); // 弹出对话框
+    dialog = new HistoryDialog(this);
     dialog->setHistory(m_chatServer->getChatHistory()); // 设置历史消息
+    dialog->exec(); // 弹出对话框
     delete dialog; // 关闭后删除对话框
+    dialog = nullptr; // 清空指针
+}
+
+void MainWindow::updateHistory() {
+    qDebug() << dialog << "是不是空指针" ;
+    qDebug() << "测试是不是来到这里，然后崩溃了！！！！";
+    if (dialog != nullptr) { // dialog 是 HistoryDialog 的指针
+        qDebug() << "再测试是否来到这里崩溃";
+        dialog->updateHistory(m_chatServer->theNewChatHistory());
+    }
 }

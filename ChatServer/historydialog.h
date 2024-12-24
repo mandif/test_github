@@ -3,6 +3,9 @@
 
 #include <QDialog>
 #include <QListWidget>
+#include <QJsonObject>
+#include <QList>
+#include "chatserver.h"
 
 namespace Ui {
 class HistoryDialog;
@@ -13,7 +16,11 @@ class HistoryDialog : public QDialog {
 
 public:
     explicit HistoryDialog(QWidget *parent = nullptr);
-    void setHistory(const QList<QString> &history);
+    void setHistory(const QList<QJsonObject> &history);
+    void updateHistory(const QJsonObject &history);
+
+private slots:
+    void on_back_clicked();
 
 private:
     Ui::HistoryDialog *ui;

@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QTcpServer>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QList>
 #include "serverworker.h"
 
 class ChatServer : public QTcpServer
@@ -10,8 +13,9 @@ class ChatServer : public QTcpServer
     Q_OBJECT
 public:
     explicit ChatServer(QObject *parent = nullptr);
-    const QList<QString>& getChatHistory() const; // 获取聊天记录
-    void logChatMessage(const QString &msg); // 用于记录聊天消息
+    const QList<QJsonObject>& getChatHistory() const; // 获取聊天记录
+    const QJsonObject& theNewChatHistory() const; // 获取最新聊天记录
+    void logChatMessage(const QJsonObject &msg); // 用于记录聊天消息
 
 protected:
     void incomingConnection(qintptr socketDescriptor) override;
@@ -22,6 +26,7 @@ protected:
 
 signals:
     void logMessage(const QString &msg);
+    void newMessageReceived();
 
 public slots:
     void StopServer();
@@ -31,7 +36,7 @@ public slots:
 
 private:
     int adminCnt = 1;
-    QList<QString> m_chatHistory; // 聊天记录
+    QList<QJsonObject> m_chatHistory; // 聊天记录
 };
 
 #endif // CHATSERVER_H

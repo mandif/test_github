@@ -8,15 +8,66 @@ ChatServer::ChatServer(QObject *parent):
     QTcpServer(parent)
 {}
 
-const QList<QString> &ChatServer::getChatHistory() const
+const QList<QJsonObject> &ChatServer::getChatHistory() const
 {
     return m_chatHistory; // 返回聊天记录
 }
 
-void ChatServer::logChatMessage(const QString &msg)
+const QJsonObject &ChatServer::theNewChatHistory() const
 {
-    m_chatHistory.append(msg); // 保存消息到历史记录
-    emit logMessage(msg); // 发送日志消息信号
+    return m_chatHistory.last();
+}
+
+void ChatServer::logChatMessage(const QJsonObject &msg)
+{
+
+    //获取消息类型，如果是message，就将接收者设置为all，如果是recipient，就按照原来的接收者
+    const QJsonValue msgTypeVal = msg.value("type");
+
+    const QString msgType = msgTypeVal.toString();
+
+    //获取系统当前时间
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+
+    // 将当前时间转换为字符串格式
+    QString timeString = currentDateTime.toString("yyyy-MM-dd hh:mm:ss");
+
+    QJsonObject chatMessage;
+
+    if(msgType == "message"){
+        const QJsonValue senderVal = msg.value("sender");
+        const QJsonValue textVal = msg.value("text");
+        const QString sender = senderVal.toString();
+        const QString text = textVal.toString();
+
+        chatMessage["type"] = "message";
+        chatMessage["sender"] = sender;
+        chatMessage["reciver"] = "all";
+        chatMessage["text"] = text;
+        chatMessage["time"] = timeString;
+    }else if(msgType == "recipient"){
+        const QJsonValue ReLinkUserVal = msg.value("ReLinkUserName");
+        const QJsonValue LinkedUserVal = msg.value("LinkedUserName");
+        const QJsonValue messageVal = msg.value("message");
+
+        const QString sender = ReLinkUserVal.toString();
+        const QString reciver = LinkedUserVal.toString();
+        const QString text = messageVal.toString();
+
+        chatMessage["type"] = "recipient";
+        chatMessage["sender"] = sender;
+        chatMessage["reciver"] = reciver;
+        chatMessage["text"] = text;
+        chatMessage["time"] = timeString;
+    }
+
+    qDebug() << "记录历史消息：" << chatMessage;
+
+    //保存消息到历史记录
+    m_chatHistory.append(chatMessage);
+
+    //如果历史记录框存在，更新
+    emit newMessageReceived();
 }
 
 void ChatServer::incomingConnection(qintptr socketDescriptor)
@@ -48,6 +99,7 @@ void ChatServer::StopServer()
 
 void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
 {
+
     // 从 JSON 对象中获取 "type" 字段的值
     const QJsonValue typeVal = docObj.value("type");
 
@@ -80,6 +132,9 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         message["type"] = "message";        // 设置消息类型为 "message"
         message["text"] = text;              // 设置消息内容
         message["sender"] = sender->userName(); // 设置消息发送者的用户名
+
+        //将消息保存到历史记录中，保持格式一致
+        logChatMessage(message);
 
         // 将消息广播给所有连接的客户端，除了发送者
         boradcast(message, sender);
@@ -249,6 +304,11 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         privateMessage["LinkedUserName"] = LinkedUserName; // 被请求连接的用户名
         privateMessage["ReLinkUserName"] = ReLinkUserName; // 请求连接的用户名
         privateMessage["message"] = message; // 私聊消息
+
+        //将消息保存到历史记录中，保持格式一致
+        logChatMessage(privateMessage);
+
+
 
         boradcast(privateMessage, nullptr); // 广播请求连接消息
     }
