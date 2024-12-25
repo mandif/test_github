@@ -18,12 +18,24 @@ public:
     explicit HistoryDialog(QWidget *parent = nullptr);
     void setHistory(const QList<QJsonObject> &history);
     void updateHistory(const QJsonObject &history);
+    void showSearchHistory(const QList<QJsonObject> &history);
+    void setHistoryText(const QList<QJsonObject> &history);
 
 private slots:
     void on_back_clicked();
 
+
+
+    //点击搜索按钮进行历史记录搜索
+    void on_searchButton_clicked();
+
+    void on_reset_clicked();
+
 private:
     Ui::HistoryDialog *ui;
+
+    // 存储历史记录的列表
+    QList<QJsonObject> historyList;
 };
 
 #endif // HISTORYDIALOG_H

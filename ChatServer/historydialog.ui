@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>656</width>
+    <height>357</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="userName">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -50,7 +50,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QDateTimeEdit" name="dateTimeEdit">
+        <widget class="QDateEdit" name="dateTime">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -62,7 +62,21 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>关键字：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="keywords"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="searchButton">
        <property name="text">
         <string>搜索</string>
        </property>
@@ -74,26 +88,37 @@
     <widget class="QListWidget" name="listWidget"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Orientation::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="back">
+      <widget class="QPushButton" name="reset">
        <property name="text">
-        <string>返回</string>
+        <string>重置</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="back">
+         <property name="text">
+          <string>返回</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
