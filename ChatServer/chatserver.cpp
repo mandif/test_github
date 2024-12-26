@@ -3,6 +3,8 @@
 #include <QJsonValue>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QThreadPool>
+#include <QRunnable>
 
 ChatServer::ChatServer(QObject *parent):
     QTcpServer(parent)
@@ -82,6 +84,17 @@ void ChatServer::incomingConnection(qintptr socketDescriptor)
     connect(worker,&ServerWorker::disconnectedFromClient,this,
             std::bind(&ChatServer::userDisconnected,this,worker));
     m_clients.append(worker);
+
+    // 创建一个新的线程
+    QThread *thread = new QThread();
+    worker->moveToThread(thread);  // 将 worker 移到这个新线程
+
+    connect(thread, &QThread::started, worker, &ServerWorker::run);  // 当线程启动时，调用 worker 的 run 方法
+    connect(worker, &ServerWorker::disconnectedFromClient, thread, &QThread::quit);  // 当客户端断开连接时，退出线程
+    connect(worker, &ServerWorker::disconnectedFromClient, worker, &ServerWorker::deleteLater);  // 删除 worker
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);  // 删除线程
+
+    thread->start();  // 启动线程
     emit logMessage("新的用户连接上了");
 }
 

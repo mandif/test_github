@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QRunnable>
 
-class ServerWorker : public QObject
+class ServerWorker : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
@@ -13,6 +14,9 @@ public:
 
     QString userName();
     void setUserName(QString user);
+
+    // 重写 run() 方法，以便在线程池中执行
+    void run() override;
 
 signals:
     void logMessage(const QString &msg);

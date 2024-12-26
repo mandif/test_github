@@ -2,6 +2,7 @@
 #include <QDataStream>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QThread>
 
 ServerWorker::ServerWorker(QObject *parent)
     : QObject{parent}
@@ -24,6 +25,11 @@ QString ServerWorker::userName()
 void ServerWorker::setUserName(QString user)
 {
     m_userName = user;
+}
+
+void ServerWorker::run()
+{
+
 }
 
 void ServerWorker::onReadyRead()
