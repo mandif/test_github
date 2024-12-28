@@ -45,11 +45,13 @@ private slots:
 
     void onUserDoubleClicked(QListWidgetItem *item);
     void showWindow(const QString &username);
+    void closeWindow(const QString &username);
 private:
     Ui::MainWindow *ui;
 
     ChatClient *m_chatClient;
     QString chatUserName;
+    PrivateChatWindow *chatWindow; //聊天窗口
     bool isAdmin;  // 新增变量，用于标记当前用户是否为管理员
 
     QMap<QString, PrivateChatWindow*> m_chatWindows; // 用于存储用户私聊窗口

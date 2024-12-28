@@ -31,3 +31,8 @@ void PrivateChatWindow::receiveMessage(const QString &sender, const QString &rec
     if(m_priusername == sender)
         ui.chatTextEdit->append(QString("%1: %2").arg("You").arg(message));  // 显示接收到的消息
 }
+
+void PrivateChatWindow::closeEvent(QCloseEvent *event) {
+    emit requestClose(); // 释放关闭信号
+    QDialog::closeEvent(event); // 调用父类的关闭事件
+}

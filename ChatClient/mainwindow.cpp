@@ -215,6 +215,24 @@ void MainWindow::jsonReceived(const QJsonObject &docObj)
             showWindow(ReLinkUserName);
         }
 
+    }else if (typeVal.toString().compare("closeWindow", Qt::CaseInsensitive) == 0){
+        // 从 JSON 对象中获取 "username" 字段的值
+        const QJsonValue LinkedUserNameVal = docObj.value("LinkedUserName");
+        const QJsonValue ReLinkUserNameVal = docObj.value("ReLinkUserName");
+
+        // 检查用户名是否为空或非字符串类型，如果是，则返回
+        if (LinkedUserNameVal.isNull() || !LinkedUserNameVal.isString())
+            return;
+        if (ReLinkUserNameVal.isNull() || !ReLinkUserNameVal.isString())
+            return;
+
+        QString LinkedUserName = LinkedUserNameVal.toString();
+        QString ReLinkUserName = ReLinkUserNameVal.toString();
+
+        if(isSelf(LinkedUserName)){
+            qDebug() << "用户" << LinkedUserName << "接收到关闭连接了";
+            closeWindow(ReLinkUserName);
+        }
     }
 }
 
@@ -351,7 +369,7 @@ void MainWindow::showWindow(const QString &username){
     }
 
     // 创建新聊天窗口
-    PrivateChatWindow *chatWindow = new PrivateChatWindow(username, this);
+    chatWindow = new PrivateChatWindow(username, this);
     m_chatWindows[username] = chatWindow; // 存储窗口实例
 
     // 连接发送消息的信号
@@ -359,6 +377,7 @@ void MainWindow::showWindow(const QString &username){
             [=](const QString &recipient, const QString &message) {
                 qDebug() << "类型为：" << recipient;   //这里的类型recipient是私聊消息接收方的用户名
                 qDebug() << "私聊发送的消息是：" << message;
+                qDebug() << "有哪些私聊用户：" << m_chatWindows;
                 m_chatClient->sendBothPrivateMessage(m_chatClient->userName(), recipient, message, "recipient");
             });
 
@@ -368,8 +387,23 @@ void MainWindow::showWindow(const QString &username){
 
     // 连接 finished 信号来处理窗口关闭
     connect(chatWindow, &QDialog::finished, [=]() {
+        qDebug() << "现在还剩下什么用户：" << m_chatWindows;
         m_chatWindows.remove(username);  // 从 map 中移除
+
+        //调用发送关闭窗口函数
+        m_chatClient->sendCloseMessage(m_chatClient->userName(), username, "closeWindow");
+
+
     });
 
     chatWindow->show();  // 显示被双击用户的聊天窗口
+}
+
+//关闭私聊窗口
+void MainWindow::closeWindow(const QString &username)
+{
+    if(m_chatWindows.contains(username)){
+        m_chatWindows[username]->close();
+        m_chatWindows.remove(username);  // 从 map 中移除
+    }
 }

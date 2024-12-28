@@ -13,6 +13,10 @@ public:
 
 signals:
     void sendMessageToUser(const QString &recipient, const QString &message);
+    void requestClose();
+
+protected:
+    void closeEvent(QCloseEvent *event) override; // 重写关闭事件s
 
 public slots:
     void receiveMessage(const QString &sender, const QString &reciver, const QString &message);

@@ -111,6 +111,25 @@ void ChatClient::sendBothPrivateMessage(const QString &text, const QString &text
     }
 }
 
+//关闭窗口函数
+void ChatClient::sendCloseMessage(const QString &text, const QString &text2, const QString &type)
+{
+    if(m_clientSocket->state() != QAbstractSocket::ConnectedState)
+        return;
+
+    if(!text.isEmpty() && !text2.isEmpty()){
+        QDataStream serverStream(m_clientSocket);
+        serverStream.setVersion(QDataStream::Qt_6_7);
+
+        QJsonObject sendMessage;
+        sendMessage["type"] = type;
+        sendMessage["ReLink"] = text;
+        sendMessage["Linked"] = text2;
+
+        serverStream << QJsonDocument(sendMessage).toJson();
+    }
+}
+
 void ChatClient::connectToServer(const QHostAddress &address, quint16 port)
 {
     m_clientSocket->connectToHost(address,port);

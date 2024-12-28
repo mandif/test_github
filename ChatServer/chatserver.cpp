@@ -324,6 +324,25 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
 
 
         boradcast(privateMessage, nullptr); // 广播请求连接消息
+    }else if(typeVal.toString().compare("closeWindow", Qt::CaseInsensitive) == 0){
+        const QJsonValue ReLinkUserVal = docObj.value("ReLink");
+        const QJsonValue LinkedUserVal = docObj.value("Linked");
+        if (ReLinkUserVal.isNull() || !ReLinkUserVal.isString()) return;
+        if (LinkedUserVal.isNull() || !LinkedUserVal.isString()) return;
+
+
+        QString LinkedUserName = LinkedUserVal.toString();
+        QString ReLinkUserName = ReLinkUserVal.toString();
+        qDebug() << "用户" << ReLinkUserName << "发起关闭连接";
+        qDebug() << "用户" << LinkedUserName << "被请求关闭连接";
+
+        // 通知所有用户某个用户被请求连接
+        QJsonObject closeMessage;
+        closeMessage["type"] = "closeWindow"; // 通知类型为请求关闭连接
+        closeMessage["LinkedUserName"] = LinkedUserName; // 被请求连接的用户名
+        closeMessage["ReLinkUserName"] = ReLinkUserName; // 请求连接的用户名
+
+        boradcast(closeMessage, nullptr); // 广播请求连接消息
     }
 }
 

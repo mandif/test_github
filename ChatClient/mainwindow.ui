@@ -14,27 +14,56 @@
    <string>聊天室客户端</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">#titleLabel{
-background:white;
-color:rgb(255,255,255);
-border:none;
-border-botton:1px solid black;
-padding:5px;
-font:24pt&quot;黑体&quot;;
-background-color:rgba(0,170,127,255);
+   <string notr="true">#titleLabel {
+    background-color: rgba(99, 184, 255, 1);  /* 使用柔和的天蓝色 */
+    color: white;  /* 白色字体以增强对比度 */
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);  /* 使用半透明白色边框 */
+    padding: 15px;  /* 增加内边距以改善可读性 */
+    font: bold 24pt &quot;黑体&quot;;  /* 字体加粗 */
 }
 
-#mainFrame{
-border:none;
-background:white;
+#mainFrame {
+    border: none;
+    background-color: rgba(240, 248, 255, 1);  /* 使用淡蓝色作为背景 */
 }
 
-#loginFrame{
-background:qlineargradient(x1:0,y1:0,x2:0,y2:1,stop: 0 #ddf,stop: 1#aaf);
-border:1px solid gray;
-padding:10px;
-border-radius:25px;
-}</string>
+#loginFrame {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #eef, stop: 1 #b2e1ff);  /* 使用明亮的渐变效果 */
+    border: 1px solid #6bb8f8;  /* 用更柔和的蓝色边框 */
+    padding: 20px;  /* 增加内边距，增强舒适度 */
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  /* 适度的阴影效果 */
+}
+
+/* 输入框 */
+QLineEdit {
+    border: 1px solid #ccc;  /* 使用浅灰色边框 */
+    border-radius: 5px;
+    padding: 10px;  /* 增加内边距 */
+    background-color: rgba(255, 255, 255, 0.9); /* 明亮的白色背景 */
+}
+
+/* 按钮样式 */
+QPushButton {
+    background-color: rgba(66, 155, 255, 1);  /* 温和的蓝色 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    font-size: 16pt;
+    cursor: pointer;  /* 显示手型光标 */
+}
+
+QPushButton:hover {
+    background-color: rgba(38, 115, 255, 1);  /* 鼠标悬停时更深的蓝色 */
+    cursor: pointer;  /* 确保鼠标悬停时是手型光标 */
+}
+
+QPushButton:pressed {
+    background-color: rgba(30, 90, 255, 1);  /* 按下时更深的蓝色 */
+}
+</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -44,7 +73,7 @@ border-radius:25px;
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>吴铭宇的聊天室</string>
+       <string>多用户聊天室</string>
       </property>
      </widget>
     </item>
@@ -58,9 +87,6 @@ border-radius:25px;
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QTextEdit" name="roomTextEdit"/>
-          </item>
-          <item>
            <widget class="QListWidget" name="userListWidget">
             <property name="maximumSize">
              <size>
@@ -69,6 +95,9 @@ border-radius:25px;
              </size>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QTextEdit" name="roomTextEdit"/>
           </item>
          </layout>
         </item>

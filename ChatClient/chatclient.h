@@ -27,6 +27,7 @@ public slots:
     void sendMessage(const QString &text,const QString &type = "message");
     void sendPrivateMessage(const QString &text,const QString &text2,const QString &type = "message");
     void sendBothPrivateMessage(const QString &text, const QString &text2, const QString &message, const QString &type = "message");
+    void sendCloseMessage(const QString &text, const QString &text2, const QString &type = "message");
     void connectToServer(const QHostAddress &address,quint16 port);
     void disconnectFromHost();
 };

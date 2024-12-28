@@ -7,6 +7,7 @@ HistoryDialog::HistoryDialog(QWidget *parent) :
     ui(new Ui::HistoryDialog)
 {
     ui->setupUi(this);
+    ui->dateTime->clear();
 }
 
 //提取出将历史记录显示在ListWidget中的操作
@@ -154,6 +155,9 @@ void HistoryDialog::showSearchHistory(const QList<QJsonObject> &history)
 
 void HistoryDialog::on_reset_clicked()
 {
+    ui->userName->clear();
+    ui->dateTime->setDate(QDate(2000,1,1));
+    ui->keywords->clear();
     showSearchHistory(historyList);
 }
 
