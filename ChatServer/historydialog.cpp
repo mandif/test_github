@@ -151,8 +151,7 @@ void HistoryDialog::showSearchHistory(const QList<QJsonObject> &history)
     setHistoryText(history);
 }
 
-
-
+//重置搜索栏和显示全部历史记录
 void HistoryDialog::on_reset_clicked()
 {
     ui->userName->clear();

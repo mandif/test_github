@@ -162,6 +162,17 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
 
+        // 检查userList中有哪些用户
+        qDebug() << "userList中有哪些用户" << userList;
+
+        // 判断是否有同名的用户
+        if(userList.contains(usernameVal.toString())){
+            emit logMessage("该用户已存在！！！");
+            m_clients.removeAll(sender);
+            sender->deleteLater();
+            return;
+        }
+
         // 设置发送者的用户名
         sender->setUserName(usernameVal.toString());
 
@@ -186,6 +197,9 @@ void ChatServer::jsonReceived(ServerWorker *sender, const QJsonObject &docObj)
             else
                 userlist.append(worker->userName()); // 添加其他用户的用户名
         }
+
+        // 将用户添加到集合中
+        userList.append(sender->userName());
 
         // 将用户列表添加到 JSON 消息中
         userListMessage["userlist"] = userlist;
@@ -355,6 +369,13 @@ void ChatServer::userDisconnected(ServerWorker *sender)
         QJsonObject disconnectedMessage;
         disconnectedMessage["type"] = "userdisconnected";
         disconnectedMessage["username"] = userName;
+
+        // 将用户从集合中删除
+        for(int i = 0;i < userList.size();i ++){
+            if(userList[i] == userName)
+                userList.removeAt(i);
+        }
+
         boradcast(disconnectedMessage,nullptr);
         emit logMessage(userName + "disconnected");
     }

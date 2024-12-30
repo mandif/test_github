@@ -62,10 +62,10 @@ void MainWindow::on_logoutButton_clicked()
 
 void MainWindow::connectToServer() //连接服务器
 {
-    ui->stackedWidget->setCurrentWidget(ui->chatPage);
     if(ui->userNameEdit->text().compare("管理员") == 0){  //判断是否是管理员登录
         m_chatClient->sendMessage(ui->userNameEdit->text(),"admin");
         isAdmin = true;  // 如果是管理员，设置为true
+        ui->stackedWidget->setCurrentWidget(ui->chatPage);
     }
     else{
         m_chatClient->setUserName(ui->userNameEdit->text());
@@ -115,6 +115,15 @@ void MainWindow::jsonReceived(const QJsonObject &docObj)
         // 检查用户名是否为空或非字符串类型，如果是，则返回
         if (usernameVal.isNull() || !usernameVal.isString())
             return;
+
+        qDebug() << "用户登录是否有来到这里？？？？？？？？？？";
+
+        // 获取用户名
+        const QString userName = usernameVal.toString();
+        // 让该线程用户进入界面
+        if(isSelf(userName)){
+            ui->stackedWidget->setCurrentWidget(ui->chatPage);
+        }
 
         // 调用 userJoined 函数处理新用户加入
         userJoined(usernameVal.toString());
@@ -276,6 +285,7 @@ void MainWindow::userListReceived(const QStringList &list)
     else ui->userListWidget->addItems(list);
 }
 
+//管理员右击用户可进行操作
 void MainWindow::contextMenuRequested(const QPoint &pos)
 {
     QListWidgetItem *item = ui->userListWidget->itemAt(pos);

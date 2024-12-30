@@ -72,7 +72,7 @@ void ChatClient::sendMessage(const QString &text, const QString &type)
     }
 }
 
-//发送私聊消息
+//发送私聊请求
 void ChatClient::sendPrivateMessage(const QString &text, const QString &text2, const QString &type)
 {
     if(m_clientSocket->state() != QAbstractSocket::ConnectedState)
@@ -90,6 +90,7 @@ void ChatClient::sendPrivateMessage(const QString &text, const QString &text2, c
     }
 }
 
+//发送私聊消息
 void ChatClient::sendBothPrivateMessage(const QString &text, const QString &text2, const QString &message, const QString &type)
 {
     if(m_clientSocket->state() != QAbstractSocket::ConnectedState)

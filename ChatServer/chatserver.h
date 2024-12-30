@@ -5,6 +5,7 @@
 #include <QTcpServer>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QJsonArray>
 #include <QList>
 #include "serverworker.h"
 
@@ -35,7 +36,8 @@ public slots:
     void handleMuteUser(const QString mutedUserName);
 
 private:
-    int adminCnt = 1;
+    int adminCnt = 1; //管理员数量
+    QJsonArray userList; //用户数量
     QList<QJsonObject> m_chatHistory; // 聊天记录
 };
 
